@@ -35,9 +35,10 @@ class Board extends Component {
           return -1;
         } else if (a.score < b.score) {
           return 1;
-        } else {
-          return 0;
+        } else if (a.code > b.code){
+          return 1;
         }
+        return -1;
       });
     }
     return this.state.score
