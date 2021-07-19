@@ -71,7 +71,7 @@ const  HomePage= () => {
 	if(isAuthenticated()) {
     if(user.user){
       if(user.user.role === 1){
-        return (<Scoreboard/>);
+        return (<Scoreboard user={user.user}/>);
       } else {
         return(<h1>You are not Admin!!!</h1>)
       }
