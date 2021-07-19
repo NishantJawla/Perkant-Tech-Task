@@ -3,9 +3,11 @@ const app = express();
 const secret = require("./utility/secret");
 const mongoose = require("mongoose");
 const userRouters = require("./routes/user");
+var cors = require('cors')
 //middlewares
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors())
 app.use("/api", userRouters);
 //connection to mongo db
 mongoose

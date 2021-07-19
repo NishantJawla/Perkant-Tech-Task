@@ -1,1 +1,1 @@
-export const ENVIRONMENT = process.env.REACT_APP_ENVIRONMENT;
+export const API = process.env.REACT_APP_API;
