@@ -4,20 +4,20 @@ const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 const secret = require("../utility/secret");
 const User = require("../models/user");
-
+const statusCodes = require("../utility/statuscodes")
 exports.signupHandler = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({
-      status: 400,
+    return res.status(statusCodes.BAD_REQUEST).json({
+      status: statusCodes.BAD_REQUEST,
       error: errors.array()[0].msg,
     });
   }
 
   User.findOne({ name: req.body.name }).exec((err, user) => {
     if (user) {
-      return res.status(400).json({
-        status: 400,
+      return res.status(statusCodes.BAD_REQUEST).json({
+        status: statusCodes.BAD_REQUEST,
         error: "User with this name already exist!",
       });
     }
@@ -27,13 +27,13 @@ exports.signupHandler = (req, res) => {
       user.save((err, user) => {
         if (err || !user) {
           console.log(err);
-          return res.status(400).json({
-            status: 400,
+          return res.status(statusCodes.BAD_REQUEST).json({
+            status: statusCodes.BAD_REQUEST,
             error: "Failed to save user",
           });
         }
-        res.status(200).json({
-          status: 200,
+        res.status(statusCodes.OK).json({
+          status: statusCodes.OK,
           msg: "User Created Succesfully",
         });
       });
@@ -44,8 +44,8 @@ exports.signupHandler = (req, res) => {
 exports.loginHandler = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({
-      status: 400,
+    return res.status(statusCodes.BAD_REQUEST).json({
+      status: statusCodes.BAD_REQUEST,
       msg: errors.array()[0].msg,
       error: errors.array()[0].msg,
     });
@@ -55,7 +55,7 @@ exports.loginHandler = (req, res) => {
       if (err) {
         console.log("some error occured");
       }
-      return res.status(400).json({
+      return res.status(statusCodes.BAD_REQUEST).json({
         error: "User with this name does not exist",
       });
     }
@@ -65,7 +65,7 @@ exports.loginHandler = (req, res) => {
         user.encryptedPassword,
         function (err, result) {
           if (result != true) {
-            return res.status(400).json({
+            return res.status(statusCodes.BAD_REQUEST).json({
               error: "Please Enter correct Password",
             });
           } else {
@@ -78,7 +78,7 @@ exports.loginHandler = (req, res) => {
               secret.SECRET,
               { expiresIn: "30m" },
               (err, token) => {
-                return res.status(200).json({
+                return res.status(statusCodes.OK).json({
                   token: "Bearer " + token,
                   msg: "User succesfully loggedin!",
                 });
@@ -92,7 +92,7 @@ exports.loginHandler = (req, res) => {
 };
 
 exports.getUserHandler = (req, res) => {
-  res.status(200).json({
+  res.status(statusCodes.OK).json({
     msg: "Succesfully Loaded Data",
     name: req.user.name,
   });
