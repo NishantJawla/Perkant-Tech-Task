@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Team = require('./team');
 mongoose.set('useFindAndModify', false);
-//user schema
+
 const userSchema = new Schema({
     name: {
         type: String,
