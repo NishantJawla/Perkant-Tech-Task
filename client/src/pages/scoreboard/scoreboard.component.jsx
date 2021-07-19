@@ -11,8 +11,8 @@ export default class Scoreboard extends Component {
     render() {
         if(isAuthenticated()) {
             return (
-                <div className="bg-gray-100 h-screen">
-                    <h1 className="py-4 mb-6 text-center font-black text-5xl">Welcome to Admin Dashboard</h1>
+                <div className="bg-gray-100 h-screen w-screen">
+                    <h1 className="py-4 mb-6 text-center font-black lg:text-5xl">Welcome to Admin Dashboard</h1>
                 <Board className="pt-4"/>
                 <Link>
                 <button
