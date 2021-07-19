@@ -3,7 +3,7 @@ import { LockClosedIcon } from '@heroicons/react/solid'
 import {signin,authenticate,isAuthenticated} from "./homepage.api-calls"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Scoreboard from "../scoreboard/scoreboard.component"
+import Scoreboard from "../scoreboard/scoreboard.component";
 const axios = require("axios");
 const  HomePage= () => {
   const [values, setValues] = useState({
@@ -62,18 +62,23 @@ const  HomePage= () => {
     try {
         const response = await axios
         .get("http://localhost:7000/api/getuser",{ headers: {"Authorization" : `${token}`} });
-        
-        console.log(response.data)
+        setUser({...user, user: response.data})
     } catch (e) {
         console.log(e)
     }
 }
-  if(isAuthenticated()) {
-    const {token} = isAuthenticated();
-    console.log(token)
-    getDataFromServer(token);
-    // return (<Scoreboard/>);
+
+	if(isAuthenticated()) {
+    if(user.user){
+      if(user.user.role === 1){
+        return (<Scoreboard/>);
+      } else {
+        return(<h1>You are not Admin!!!</h1>)
+      }
+    }
   }
+  const {token} = isAuthenticated();
+  getDataFromServer(token);
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
           <ToastContainer />

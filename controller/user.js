@@ -95,5 +95,6 @@ exports.getUserHandler = (req, res) => {
   res.status(statusCodes.OK).json({
     msg: "Succesfully Loaded Data",
     name: req.user.name,
+    role: req.user.role,
   });
 };
