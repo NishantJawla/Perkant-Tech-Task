@@ -3,7 +3,7 @@ import { LockClosedIcon } from '@heroicons/react/solid'
 import {signin,authenticate,isAuthenticated} from "./homepage.api-calls"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Scoreboard from "../scoreboard/scoreboard.component";
+import {Redirect} from "react-router-dom"
 const axios = require("axios");
 const  HomePage= () => {
   const [values, setValues] = useState({
@@ -40,8 +40,8 @@ const  HomePage= () => {
       })
       .catch( (err) => {
         errorMessage()
-        console.log(err);
-        console.log("signin request failed")
+        // console.log(err);
+        // console.log("signin request failed")
       });
   };
 
@@ -64,14 +64,14 @@ const  HomePage= () => {
         .get("http://localhost:7000/api/getuser",{ headers: {"Authorization" : `${token}`} });
         setUser({...user, user: response.data})
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
 }
 
 	if(isAuthenticated()) {
     if(user.user){
       if(user.user.role === 1){
-        return (<Scoreboard user={user.user}/>);
+        return (<Redirect to="/scoreboard" />);
       } else {
         return(<h1>You are not Admin!!!</h1>)
       }
