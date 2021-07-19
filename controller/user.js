@@ -1,13 +1,8 @@
 const bcrypt = require('bcrypt')
-require('dotenv').config();
-const nodemailer = require("nodemailer");
-const { check, validationResult } = require("express-validator");
+const {validationResult } = require("express-validator");
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
-var expressJwt = require("express-jwt");
-const normalizeEmail = require('normalize-email');
-const passport = require('passport');
-
+const secret = require('../utility/secret');
 const User = require('../models/user');
 
 exports.signupHandler = (req,res)=>{
@@ -16,48 +11,22 @@ exports.signupHandler = (req,res)=>{
 if (!errors.isEmpty()) {
     return res.status(400).json({
         status: 400,
-        msg: errors.array()[0].msg,
         error: errors.array()[0].msg
     });
 }
 
-    User.findOne({email:req.body.email}).exec((err,user)=>{
+    User.findOne({name:req.body.name}).exec((err,user)=>{
         if(user){
             return res.status(400).json({
                 status: 400,
-                msg: 'User with this email already exist!',
-                error: 'User with this email already exist!',
-                resCode: '109'
+                error: 'User with this name already exist!',
             })
         }
         bcrypt.hash(req.body.plainPassword, saltRounds, (err, hash) => {
             const user = new User(req.body);
-            user.email = normalizeEmail(req.body.email);
-            // console.log(normalizeEmail(req.body.email));
-            // console.log(user.email);
             user.encryptedPassword = hash;
-            
-                const randString = () => {
-                    const len = 64;
-                    let randStr = '';
-                    for(let i = 0; i<len; i++){
-                        const ch = Math.floor((Math.random()*10)+1)
-                        randStr += ch
-                    }
-                    return randStr;
-                }
-                const uniqueString = randString()
-                user.uniqueString = uniqueString
-            
         user.save((err,user) => {
-            if(err){
-                if(err.keyPattern.phoneNumber === 1){
-                    return res.status(400).json({
-                        status: 400,
-                        msg: 'User with this Phone Number already exist!',
-                        error: 'User with this Phone Number already exist!'
-                    })
-                }
+            if(err || !user){
             return res.status(400).json({
                     status: 400,
                     msg: 'Failed to save user',
@@ -72,4 +41,49 @@ if (!errors.isEmpty()) {
         });
     });
     
+}
+
+
+exports.loginHandler = (req,res) =>{
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            status: 400,
+            msg: errors.array()[0].msg,
+            error: errors.array()[0].msg
+        });
+    }
+    User.findOne({name: req.body.name}).exec((err,user)=>{
+        if(err || !user){
+            if(err) {
+                console.log("some error occured")
+            }
+            return res.status(400).json({
+                error: 'User with this name does not exist',
+            })
+        }
+        if(user){
+            bcrypt.compare(req.body.plainPassword, user.encryptedPassword, function(err, result) {
+                if(result != true){
+                    return res.status(400).json({
+                        error: 'Please Enter correct Password'
+                    });
+                }else{
+                    const payload = {
+                        id: user.id,
+                        name: user.name,
+                    }
+                    jwt.sign(payload,
+                        secret.SECRET,
+                        {expiresIn : '30m'},
+                        (err,token) => {
+                            return res.status(200).json({
+                                token: 'Bearer '+token,
+                                msg: 'User succesfully loggedin!'
+                            });
+                        });
+                }
+            });
+        }
+    })
 }
