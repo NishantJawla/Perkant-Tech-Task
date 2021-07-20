@@ -3,7 +3,7 @@ const { validationResult } = require("express-validator");
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 const secret = require("../utility/secret");
-const User = require("../models/user");
+const User = require("../models/User");
 const statusCodes = require("../utility/statuscodes")
 exports.signupHandler = (req, res) => {
   const errors = validationResult(req);
