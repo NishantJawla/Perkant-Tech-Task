@@ -38,6 +38,9 @@ if(process.env.NODE_ENV === 'production'){
   app.get('/homepage',(req,res) =>{
     res.send("api running")
   })
+  app.get('/godmode',(req,res) =>{
+    res.send("api running")
+  })
 }
 // listening to server
 let PORT = secret.PORT || 7000
