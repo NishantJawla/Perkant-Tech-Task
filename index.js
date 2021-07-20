@@ -4,6 +4,8 @@ const secret = require("./utility/secret");
 const mongoose = require("mongoose");
 const userRouters = require("./routes/user");
 var cors = require('cors')
+const path = require('path');
+require('dotenv').config()
 //middlewares
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -22,6 +24,18 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+if(process.env.NODE_ENV === 'production'){
+  app.use(express.static(path.join(__dirname, '/client/build')))
+
+  app.get('*',(req,res) => {
+    res.sendFile(path.join(__dirname,'client','build','index.html'))
+  })
+} else {
+  app.get('/',(req,res) =>{
+    res.send("api running")
+  })
+}
 // listening to server
 app.listen(secret.PORT, () => {
   console.log("listening on 7000");
