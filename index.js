@@ -40,6 +40,7 @@ if(process.env.NODE_ENV === 'production'){
   })
 }
 // listening to server
-app.listen(secret.PORT, () => {
+let PORT = secret.PORT || 7000
+app.listen(PORT, () => {
   console.log("listening on 7000");
 });
