@@ -35,6 +35,9 @@ if(process.env.NODE_ENV === 'production'){
   app.get('/',(req,res) =>{
     res.send("api running")
   })
+  app.get('/homepage',(req,res) =>{
+    res.send("api running")
+  })
 }
 // listening to server
 app.listen(secret.PORT, () => {
